@@ -4,7 +4,10 @@ import Color from './Color';
 
 function App() {
   const [inputHex, setInputHex] = useState("#");
-  const [colors, setColors] = useState(Array<string>);
+  const [colors, setColors] = useState((): Array<string> => {
+    let localColors = localStorage.getItem("colors") || "[]";
+    return JSON.parse(localColors);
+  });
   const [predefinedColors] = useState([
     "#000000",
     "#FF0000",
@@ -16,6 +19,10 @@ function App() {
     "#FFFFFF"
   ])
   const [filteredColors, setFiltertedColors] = useState(Array<string>);
+
+  useEffect(() => {
+    localStorage.setItem("colors", JSON.stringify(colors));
+  }, [colors])
   
   const onHexAdd = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
