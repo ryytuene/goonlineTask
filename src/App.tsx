@@ -42,6 +42,10 @@ function App() {
     setInputHex(value);
   }
 
+  const removeColor = (value: string) => {
+    setColors(colors.filter(color => color !== value));
+  }
+
   const sortColors = (a: string, b: string): number => {
     const colorA = new Color(a);
     const colorB = new Color(b);
@@ -59,6 +63,21 @@ function App() {
     setFiltertedColors([...predefinedColors, ...colors].sort(sortColors))
   }, [predefinedColors, colors])
 
+  const colorItem = (value: string): JSX.Element => {
+    return (
+      <div key={value}>
+        <div className="item-color" style={{ backgroundColor: value }}>
+          {!predefinedColors.includes(value) &&
+            <div onClick={() => removeColor(value)} >
+              X
+            </div>
+          }
+        </div>
+        {value}
+      </div>
+    )
+  }
+
   return (
     <div>
       <form onSubmit={onHexAdd} >
@@ -69,7 +88,7 @@ function App() {
         <button type="submit" >Add</button>
       </form>
       {/* form 2 */}
-      {filteredColors.map(value => <p key={value}>{value}</p>)}
+      {filteredColors.map(value => colorItem(value))}
     </div>
   );
 }
