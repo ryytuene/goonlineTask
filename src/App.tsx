@@ -19,6 +19,10 @@ function App() {
     "#FFFFFF"
   ])
   const [filteredColors, setFiltertedColors] = useState(Array<string>);
+  const [redFilter, setRedFilter] = useState(false);
+  const [greenFilter, setGreenFilter] = useState(false);
+  const [blueFilter, setBlueFilter] = useState(false);
+  const [satFilter, setSatFilter] = useState(false);
 
   useEffect(() => {
     localStorage.setItem("colors", JSON.stringify(colors));
@@ -67,8 +71,15 @@ function App() {
   }
 
   useEffect(() => {
-    setFiltertedColors([...predefinedColors, ...colors].sort(sortColors))
-  }, [predefinedColors, colors])
+    setFiltertedColors([...predefinedColors, ...colors].sort(sortColors).filter(value => {
+      const color = new Color(value);
+      if (redFilter && color.red <= 127) return false;
+      if (greenFilter && color.green <= 127) return false;
+      if (blueFilter && color.blue <= 127) return false;
+      if (satFilter && color.getSaturationPercent() <= 50) return false;
+      return true;
+    }))
+  }, [predefinedColors, colors, redFilter, greenFilter, blueFilter, satFilter])
 
   const colorItem = (value: string): JSX.Element => {
     return (
@@ -94,7 +105,28 @@ function App() {
         </label>
         <button type="submit" >Add</button>
       </form>
-      {/* form 2 */}
+      
+      <div>
+        Select filters:
+        <div >
+          <label>
+            <input type="checkbox" onChange={() => setRedFilter(!redFilter)} checked={redFilter} />
+            Red &gt; 50%
+          </label>
+          <label>
+            <input type="checkbox" onChange={() => setGreenFilter(!greenFilter)} checked={greenFilter} />
+            Green &gt; 50%
+          </label>
+          <label>
+            <input type="checkbox" onChange={() => setBlueFilter(!blueFilter)} checked={blueFilter} />
+            Blue &gt; 50%
+          </label>
+          <label>
+            <input type="checkbox" onChange={() => setSatFilter(!satFilter)} checked={satFilter} />
+            Saturation &gt; 50%
+          </label>
+        </div>
+      </div>
       {filteredColors.map(value => colorItem(value))}
     </div>
   );

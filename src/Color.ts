@@ -12,6 +12,14 @@ class Color {
         this.green = parseInt(this.fullHex.substring(3, 5), 16);
         this.blue = parseInt(this.fullHex.substring(5), 16);
     }
+
+    getSaturationPercent(): number {
+        let min = Math.min((this.red / 255), (this.green / 255), (this.blue / 255));
+        let max = Math.max((this.red / 255), (this.green / 255), (this.blue / 255));
+        let l = (max + min) / 2;
+        let s = max === min ? 0 : (max - min) / (1 - Math.abs(2 * l - 1));
+        return s * 100;
+    }
 }
 
 export default Color
