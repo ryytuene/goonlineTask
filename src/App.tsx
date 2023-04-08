@@ -27,7 +27,7 @@ function App() {
   useEffect(() => {
     localStorage.setItem("colors", JSON.stringify(colors));
   }, [colors])
-  
+
   const onHexAdd = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const value: string = e.currentTarget.hex.value.toUpperCase();
@@ -83,10 +83,10 @@ function App() {
 
   const colorItem = (value: string): JSX.Element => {
     return (
-      <div key={value}>
+      <div className="item" key={value}>
         <div className="item-color" style={{ backgroundColor: value }}>
           {!predefinedColors.includes(value) &&
-            <div onClick={() => removeColor(value)} >
+            <div onClick={() => removeColor(value)} className="remove-color" >
               X
             </div>
           }
@@ -98,36 +98,37 @@ function App() {
 
   return (
     <div>
-      <form onSubmit={onHexAdd} >
-        <label>
+      <form onSubmit={onHexAdd} className="input-form" >
+        <label className="hex-input-container">
           <span>HEX RGB</span>
           <input type="text" id="hex" onChange={onHexChange} value={inputHex} />
         </label>
         <button type="submit" >Add</button>
       </form>
-      
-      <div>
+      <div className="filter-container">
         Select filters:
-        <div >
-          <label>
+        <div>
+          <label className="filter">
             <input type="checkbox" onChange={() => setRedFilter(!redFilter)} checked={redFilter} />
             Red &gt; 50%
           </label>
-          <label>
+          <label className="filter">
             <input type="checkbox" onChange={() => setGreenFilter(!greenFilter)} checked={greenFilter} />
             Green &gt; 50%
           </label>
-          <label>
+          <label className="filter">
             <input type="checkbox" onChange={() => setBlueFilter(!blueFilter)} checked={blueFilter} />
             Blue &gt; 50%
           </label>
-          <label>
+          <label className="filter">
             <input type="checkbox" onChange={() => setSatFilter(!satFilter)} checked={satFilter} />
             Saturation &gt; 50%
           </label>
         </div>
       </div>
-      {filteredColors.map(value => colorItem(value))}
+      <div className="item-container">
+        {filteredColors.map(value => colorItem(value))}
+      </div>
     </div>
   );
 }
