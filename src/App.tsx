@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import './App.scss'
+import Color from './Color';
 
 function App() {
   const [inputHex, setInputHex] = useState("#");
@@ -14,15 +15,17 @@ function App() {
     "#00FFFF",
     "#FFFFFF"
   ])
+  const [filteredColors, setFiltertedColors] = useState(Array<string>);
   
   const onHexAdd = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const value: string = e.currentTarget.hex.value.toUpperCase();
     // not valid hex
     if (value.length !== 4 && value.length !== 7) return;
+    const color = new Color(value);
     // hex exists in array
-    if ([...predefinedColors, ...colors].includes(value)) return;
-    setColors(c => [...c, value]);
+    if ([...predefinedColors, ...colors].includes(color.fullHex)) return;
+    setColors(c => [...c, color.fullHex]);
     setInputHex("#");
   }
 
@@ -39,6 +42,23 @@ function App() {
     setInputHex(value);
   }
 
+  const sortColors = (a: string, b: string): number => {
+    const colorA = new Color(a);
+    const colorB = new Color(b);
+
+    if (colorA.red < colorB.red) return 1;
+    if (colorA.red > colorB.red) return -1;
+    if (colorA.green < colorB.green) return 1;
+    if (colorA.green > colorB.green) return -1;
+    if (colorA.blue < colorB.blue) return 1;
+    if (colorA.blue > colorB.blue) return -1;
+    return 0;
+  }
+
+  useEffect(() => {
+    setFiltertedColors([...predefinedColors, ...colors].sort(sortColors))
+  }, [predefinedColors, colors])
+
   return (
     <div>
       <form onSubmit={onHexAdd} >
@@ -49,7 +69,7 @@ function App() {
         <button type="submit" >Add</button>
       </form>
       {/* form 2 */}
-      {[...predefinedColors, ...colors].map(value => <p key={value}>{value}</p>)}
+      {filteredColors.map(value => <p key={value}>{value}</p>)}
     </div>
   );
 }
